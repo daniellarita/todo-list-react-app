@@ -3,17 +3,21 @@ import store from '../store';
 import TodoForm from '../components/TodoForm';
 import TodoList from '../components/TodoList';
 import {addTodo, markAsComplete} from '../action-creators/todos';
+import FilterContainer from '../containers/FilterContainer';
 
 
 export default class extends Component {
 
   constructor() {
     super();
-    this.state = store.getState();
+    this.state = Object.assign({
+    	completedViewSelected:false
+    },store.getState());
 
     this.handleTodoInput=this.handleTodoInput.bind(this);
     this.handleSubmit=this.handleSubmit.bind(this);
     this.markAsComplete=this.markAsComplete.bind(this);
+    this.handleClickCompletedView=this.handleClickCompletedView.bind(this);
   }
 
   componentDidMount() {
@@ -33,15 +37,35 @@ export default class extends Component {
 
   handleSubmit(e){
   	e.preventDefault();
-  	console.log("state before submit", this.state)
   	store.dispatch(addTodo(this.state.todo));
   }
 
   markAsComplete(i){
   	store.dispatch(markAsComplete(i));
+  	console.log("task is complete",this.state.todos[i].isComplete)
   }
 
+  handleClickCompletedView(){
+  	this.setState({
+  		completedViewSelected:!this.state.completedViewSelected
+  	})
+  }
+
+
   render() {
+  	// var isComplete=function(todo){
+  	// 	return todo.isComplete;
+  	//  }
+
+  	 var isIncomplete=function(todo){
+  	 	return false===todo.isComplete;
+  	 }
+  	//const completedTodos=this.state.todos.filter(isComplete);
+  	const incompleteTodos=this.state.todos.filter(isIncomplete);
+
+
+  	const todolist=this.state.completedViewSelected ? incompleteTodos : this.state.todos; 
+
     return (
     	<div>
 	      <TodoForm
@@ -49,11 +73,15 @@ export default class extends Component {
 	      handleTodoInput={this.handleTodoInput}
 	      handleSubmit={this.handleSubmit}
 	      />
-	      <TodoList
-	      todos={this.state.todos}
-	      markAsComplete={this.markAsComplete}
+		  <TodoList
+		      todos={todolist}
+		      markAsComplete={this.markAsComplete}
+		  /> 
+	      <FilterContainer 
+	      	handleClickCompletedView={this.handleClickCompletedView}
+	      	completedViewSelected={this.state.completedViewSelected}
 	      />
-	    </div>
+		</div>
     );
   }
 
