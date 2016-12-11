@@ -11,13 +11,13 @@ export default class extends Component {
   constructor() {
     super();
     this.state = Object.assign({
-    	completedViewSelected:false
+    	incompletedViewSelected:false
     },store.getState());
 
     this.handleTodoInput=this.handleTodoInput.bind(this);
     this.handleSubmit=this.handleSubmit.bind(this);
     this.markAsComplete=this.markAsComplete.bind(this);
-    this.handleClickCompletedView=this.handleClickCompletedView.bind(this);
+    this.handleView=this.handleView.bind(this);
   }
 
   componentDidMount() {
@@ -42,29 +42,24 @@ export default class extends Component {
 
   markAsComplete(i){
   	store.dispatch(markAsComplete(i));
-  	console.log("task is complete",this.state.todos[i].isComplete)
+  	console.log(this.state.isComplete)
   }
 
-  handleClickCompletedView(){
+  handleView(){
   	this.setState({
-  		completedViewSelected:!this.state.completedViewSelected
+  		incompletedViewSelected:!this.state.incompletedViewSelected
   	})
   }
 
 
   render() {
-  	// var isComplete=function(todo){
-  	// 	return todo.isComplete;
-  	//  }
-
   	 var isIncomplete=function(todo){
   	 	return false===todo.isComplete;
   	 }
-  	//const completedTodos=this.state.todos.filter(isComplete);
   	const incompleteTodos=this.state.todos.filter(isIncomplete);
 
 
-  	const todolist=this.state.completedViewSelected ? incompleteTodos : this.state.todos; 
+  	const todolist=this.state.incompletedViewSelected ? incompleteTodos : this.state.todos; 
 
     return (
     	<div>
@@ -78,8 +73,8 @@ export default class extends Component {
 		      markAsComplete={this.markAsComplete}
 		  /> 
 	      <FilterContainer 
-	      	handleClickCompletedView={this.handleClickCompletedView}
-	      	completedViewSelected={this.state.completedViewSelected}
+	      	handleView={this.handleView}
+	      	completedViewSelected={this.state.incompletedViewSelected}
 	      />
 		</div>
     );

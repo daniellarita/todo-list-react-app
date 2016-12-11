@@ -23,7 +23,7 @@ export default class extends Component {
     return (
     	<div>
         <label>Views</label>
-        <button onClick={this.props.handleClickCompletedView}>{this.props.completedViewSelected ? "View All" : "View Incomplete"}</button>
+        <button onClick={this.props.handleView}>{this.props.incompletedViewSelected ? "View All" : "View Incomplete"}</button>
 	    </div>
     );
   }
